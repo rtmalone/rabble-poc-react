@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>React Tutorial</title>
+    <!-- Not present in the tutorial. Just for basic styling. -->
+    <link rel="stylesheet" href="css/base.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.14.8/react.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.14.8/react-dom.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.6.16/browser.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.2/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/0.3.5/marked.min.js"></script>
+  </head>
+  <body>
+    <div id="content"></div>
+    <div id="broadcast"></div>
+    <!-- <script type="text/babel" src="scripts/example.js"></script> -->
+    <script type="text/babel">
+      var BroadcastBox = React.createClass({
+        getInitialState: function() {
+          return {broadcast: {}};
+        },
+        loadBroadcastFromServer: function() {
+          $.ajax({
+            url: this.props.url,
+            dataType: 'json',
+            cache: false,
+            success: function(data) {
+              this.setState({broadcast: data});
+            }.bind(this),
+            error: function(xhr, status, err) {
+            }.bind(this)
+          });
+        },
+        componentDidMount: function() {
+          this.loadBroadcastFromServer();
+        },
+        render: function() {
+          return (
+            <div className='broadcastBox'>
+              <h2>{this.state.broadcast.name}</h2>
+              <p>Type: {this.state.broadcast.type}</p>
+              <p>Start Time: {this.state.broadcast.start}</p>
+            </div>
+          );
+        }
+      });
+
+      ReactDOM.render(
+        <BroadcastBox url='/api/broadcast'/>, document.getElementById('broadcast')
+      );
+    </script>
+  </body>
+</html>
